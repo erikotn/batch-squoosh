@@ -1,468 +1,451 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.2">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #4689cc; -webkit-text-stroke: #4689cc; background-color: #171818}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #4689cc; -webkit-text-stroke: #4689cc; background-color: #171818; min-height: 16.0px}
-    span.s1 {font-kerning: none}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BatchSquoosh - Bulk Image Optimizer</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- JSZip for batch downloading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <!-- FileSaver for saving the zip -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <style>
+        body { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
+        /* Spinner Animation */
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .spinner { animation: spin 1s linear infinite; }
+    </style>
 </head>
 <body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;BatchSquoosh - Bulk Image Optimizer&lt;/title&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- React &amp; ReactDOM --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"&gt;&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"&gt;&lt;/script&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Babel --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script src="https://unpkg.com/@babel/standalone/babel.min.js"&gt;&lt;/script&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Tailwind CSS --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- JSZip for batch downloading --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"&gt;&lt;/script&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- FileSaver for saving the zip --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"&gt;&lt;/script&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;style&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>body { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', sans-serif; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.custom-scrollbar::-webkit-scrollbar { width: 8px; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/* Spinner Animation */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.spinner { animation: spin 1s linear infinite; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;body&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div id="root"&gt;&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script type="text/babel"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const { useState, useEffect, useCallback, useRef } = React;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// --- Icons (Inline SVG for zero dependencies) ---</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const IconUpload = () =&gt; &lt;svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"&gt;&lt;path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/&gt;&lt;polyline points="17 8 12 3 7 8"/&gt;&lt;line x1="12" y1="3" x2="12" y2="15"/&gt;&lt;/svg&gt;;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const IconDownload = () =&gt; &lt;svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"&gt;&lt;path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/&gt;&lt;polyline points="7 10 12 15 17 10"/&gt;&lt;line x1="12" y1="15" x2="12" y2="3"/&gt;&lt;/svg&gt;;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const IconTrash = () =&gt; &lt;svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"&gt;&lt;path d="M3 6h18"/&gt;&lt;path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/&gt;&lt;path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/&gt;&lt;/svg&gt;;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const IconImage = () =&gt; &lt;svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"&gt;&lt;rect width="18" height="18" x="3" y="3" rx="2" ry="2"/&gt;&lt;circle cx="9" cy="9" r="2"/&gt;&lt;path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/&gt;&lt;/svg&gt;;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const IconSettings = () =&gt; &lt;svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"&gt;&lt;path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/&gt;&lt;circle cx="12" cy="12" r="3"/&gt;&lt;/svg&gt;;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const IconCheck = () =&gt; &lt;svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-400"&gt;&lt;polyline points="20 6 9 17 4 12"/&gt;&lt;/svg&gt;;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const IconLoader = () =&gt; &lt;svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="spinner text-blue-400"&gt;&lt;path d="M21 12a9 9 0 1 1-6.219-8.56"/&gt;&lt;/svg&gt;;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const IconCode = () =&gt; &lt;svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"&gt;&lt;polyline points="16 18 22 12 16 6"/&gt;&lt;polyline points="8 6 2 12 8 18"/&gt;&lt;/svg&gt;;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// --- Helper: Format Bytes ---</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const formatBytes = (bytes, decimals = 2) =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>if (bytes === 0) return '0 Bytes';</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const k = 1024;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const dm = decimals &lt; 0 ? 0 : decimals;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const sizes = ['Bytes', 'KB', 'MB', 'GB'];</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const i = Math.floor(Math.log(bytes) / Math.log(k));</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// --- Main App Component ---</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const App = () =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const [files, setFiles] = useState([]);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const [isDragging, setIsDragging] = useState(false);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const [isProcessing, setIsProcessing] = useState(false);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const [globalSettings, setGlobalSettings] = useState({</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>quality: 0.8,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>format: 'image/jpeg',</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>maxWidth: 1920,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>});</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// --- Core Image Compression Logic (Canvas API) ---</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const compressImage = async (file, settings) =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>return new Promise((resolve, reject) =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>const reader = new FileReader();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>reader.readAsDataURL(file);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>reader.onload = (event) =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>const img = new Image();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>img.src = event.target.result;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>img.onload = () =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>const canvas = document.createElement('canvas');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>let width = img.width;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>let height = img.height;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>// Resize logic (maintain aspect ratio)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>if (width &gt; settings.maxWidth) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>height = Math.round((height * settings.maxWidth) / width);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>width = settings.maxWidth;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>canvas.width = width;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>canvas.height = height;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>const ctx = canvas.getContext('2d');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>ctx.drawImage(img, 0, 0, width, height);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>canvas.toBlob(</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>(blob) =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>if (!blob) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>reject(new Error('Compression failed'));</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>return;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>resolve({</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>original: file,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>compressed: blob,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>previewUrl: URL.createObjectURL(blob), // Create URL for preview</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>originalSize: file.size,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>compressedSize: blob.size,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>width,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>height,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>id: Math.random().toString(36).substr(2, 9),</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>status: 'done'</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>});</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>},</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>settings.format,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>settings.quality</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>};</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>img.onerror = (err) =&gt; reject(err);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>};</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>reader.onerror = (err) =&gt; reject(err);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>});</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// --- Handlers ---</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const handleDrop = useCallback(async (e) =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>e.preventDefault();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>setIsDragging(false);</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const droppedFiles = Array.from(e.dataTransfer.files).filter(f =&gt; f.type.startsWith('image/'));</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>if (droppedFiles.length === 0) return;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>addFiles(droppedFiles);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>}, [globalSettings]); // Re-create if settings change (though we pass current settings explicitly)</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const handleFileSelect = (e) =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const selectedFiles = Array.from(e.target.files);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>if (selectedFiles.length === 0) return;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>addFiles(selectedFiles);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const addFiles = async (newFiles) =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>setIsProcessing(true);</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>// Create placeholders first for immediate UI feedback</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const placeholders = newFiles.map(f =&gt; ({</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>id: Math.random().toString(36).substr(2, 9),</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>original: f,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>status: 'processing',</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>originalSize: f.size</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>}));</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>setFiles(prev =&gt; [...prev, ...placeholders]);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>// Process sequentially to not freeze UI too badly on low-end devices</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const processedResults = [];</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>for (let file of newFiles) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>try {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>const result = await compressImage(file, globalSettings);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>processedResults.push(result);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>} catch (error) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>console.error("Error compressing", file.name, error);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>// Push an error state if needed, or just keep original</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>// Replace placeholders with real data</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>setFiles(prev =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>const updated = [...prev];</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>processedResults.forEach(res =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>const idx = updated.findIndex(f =&gt; f.original.name === res.original.name &amp;&amp; f.status === 'processing');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>if (idx !== -1) updated[idx] = res;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>});</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>return updated;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>});</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>setIsProcessing(false);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// Re-process all images when settings change</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// Debounced slightly to prevent crazy loops if slider is dragged fast</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>useEffect(() =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const timeoutId = setTimeout(async () =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>if (files.length === 0) return;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                    </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>// Only re-process if we actually have files</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>setIsProcessing(true);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>const newFiles = await Promise.all(files.map(async (f) =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>// Always re-compress from original source</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>return await compressImage(f.original, globalSettings);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>}));</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>setFiles(newFiles);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>setIsProcessing(false);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>}, 500);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>return () =&gt; clearTimeout(timeoutId);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>}, [globalSettings.quality, globalSettings.format, globalSettings.maxWidth]);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const removeFile = (id) =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>setFiles(files.filter(f =&gt; f.id !== id));</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const downloadAll = async () =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const zip = new JSZip();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const folder = zip.folder("optimized_images");</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>files.forEach(f =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>let ext = globalSettings.format.split('/')[1];</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>if (ext === 'jpeg') ext = 'jpg';</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>const nameParts = f.original.name.split('.');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>nameParts.pop(); // remove old extension</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>const newName = `${nameParts.join('.')}_min.${ext}`;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>folder.file(newName, f.compressed);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>});</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const content = await zip.generateAsync({ type: "blob" });</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>saveAs(content, "batch_optimized_images.zip");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// New function to download the app source code itself</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const downloadSource = () =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const htmlContent = document.documentElement.outerHTML;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const blob = new Blob([htmlContent], { type: 'text/html' });</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>saveAs(blob, "index.html");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// Calculate total stats</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const totalOriginal = files.reduce((acc, f) =&gt; acc + (f.originalSize || 0), 0);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const totalCompressed = files.reduce((acc, f) =&gt; acc + (f.compressedSize || 0), 0);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const totalSavings = totalOriginal &gt; 0 ? ((totalOriginal - totalCompressed) / totalOriginal * 100).toFixed(1) : 0;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return (</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div className="min-h-screen flex flex-col items-center py-10 px-4 md:px-10"&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                    </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>{/* Header */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div className="text-center mb-8"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500 mb-2"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>BatchSquoosh</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/h1&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;p className="text-slate-400"&gt;Secure, client-side batch image optimization.&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>{/* Main Interface Grid */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-6"&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{/* LEFT: Controls &amp; Stats */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;div className="lg:col-span-4 space-y-6"&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                            </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>{/* Settings Panel */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;div className="bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-700"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;div className="flex items-center gap-2 mb-4 text-slate-200 font-semibold"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;IconSettings /&gt; Global Settings</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;div className="space-y-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>{/* Format */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;label className="block text-xs uppercase tracking-wide text-slate-500 mb-1"&gt;Output Format&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;div className="grid grid-cols-3 gap-2"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>{['image/jpeg', 'image/png', 'image/webp'].map(fmt =&gt; (</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&lt;button<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>key={fmt}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>onClick={() =&gt; setGlobalSettings(s =&gt; ({...s, format: fmt}))}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>className={`text-sm py-2 rounded-lg border transition-colors ${</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                        </span>globalSettings.format === fmt<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                        </span>? 'bg-violet-600 border-violet-500 text-white'<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                        </span>: 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>}`}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>{fmt.split('/')[1].toUpperCase()}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>))}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>{/* Quality */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;div className="flex justify-between mb-1"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;label className="text-xs uppercase tracking-wide text-slate-500"&gt;Quality&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;span className="text-xs text-violet-400 font-mono"&gt;{Math.round(globalSettings.quality * 100)}%&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;input<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>type="range"<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>min="0.1"<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>max="1"<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>step="0.05"<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>value={globalSettings.quality}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>onChange={(e) =&gt; setGlobalSettings(s =&gt; ({...s, quality: parseFloat(e.target.value)}))}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-500"</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>/&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>{/* Max Width */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;div className="flex justify-between mb-1"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;label className="text-xs uppercase tracking-wide text-slate-500"&gt;Max Width (px)&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;span className="text-xs text-violet-400 font-mono"&gt;{globalSettings.maxWidth}px&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;input<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>type="range"<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>min="400"<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>max="3840"<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>step="100"<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>value={globalSettings.maxWidth}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>onChange={(e) =&gt; setGlobalSettings(s =&gt; ({...s, maxWidth: parseInt(e.target.value)}))}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-500"</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>/&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                                </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>{/* Download Source Button */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;div className="mt-6 pt-6 border-t border-slate-700"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;button<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>onClick={downloadSource}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>className="w-full py-2 px-4 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-sm transition-colors flex items-center justify-center gap-2"</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>title="Download this app as index.html"</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;IconCode /&gt; Download App Source Code</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;p className="text-center text-xs text-slate-500 mt-2"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>Download &lt;code&gt;index.html&lt;/code&gt; to host on GitHub.</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>{/* Summary Stats */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>{files.length &gt; 0 &amp;&amp; (</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;div className="bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-700"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;div className="flex justify-between items-end mb-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;p className="text-xs text-slate-500 uppercase"&gt;Original&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;p className="text-lg font-mono text-slate-300"&gt;{formatBytes(totalOriginal)}&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;div className="text-right"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;p className="text-xs text-slate-500 uppercase"&gt;Compressed&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;p className="text-lg font-mono text-green-400"&gt;{formatBytes(totalCompressed)}&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;div className="bg-slate-700 rounded-full h-4 w-full overflow-hidden relative"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;div<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 to-emerald-400 transition-all duration-500"</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>style={{ width: `${100 - totalSavings}%` }}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;p className="text-center mt-2 text-sm text-green-400 font-bold"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>Saved {totalSavings}%</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/p&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;button<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>onClick={downloadAll}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>className="w-full mt-4 bg-white text-slate-900 font-bold py-3 rounded-xl hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;IconDownload /&gt; Download All as ZIP</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>)}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{/* RIGHT: Drop Zone &amp; List */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;div className="lg:col-span-8 flex flex-col h-[calc(100vh-200px)] min-h-[500px]"&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                            </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>{/* Drop Zone */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;div<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>onDragOver={(e) =&gt; { e.preventDefault(); setIsDragging(true); }}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>onDragLeave={() =&gt; setIsDragging(false)}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>onDrop={handleDrop}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>className={`relative flex-shrink-0 mb-6 border-2 border-dashed rounded-2xl p-8 transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer group</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>${isDragging ? 'border-violet-500 bg-violet-500/10' : 'border-slate-600 hover:border-violet-400 hover:bg-slate-800'}`}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;input<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>type="file"<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>multiple<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>accept="image/*"</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>onChange={handleFileSelect}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>/&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;div className="bg-slate-700 p-3 rounded-full mb-3 text-violet-400 group-hover:scale-110 transition-transform"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;IconUpload /&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;h3 className="text-lg font-semibold text-slate-200"&gt;Drag &amp; Drop images here&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;p className="text-sm text-slate-500"&gt;or click to browse&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>{/* File List */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-900/50 rounded-2xl border border-slate-800 p-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>{files.length === 0 ? (</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;div className="h-full flex flex-col items-center justify-center text-slate-600 opacity-50"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;IconImage /&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;p className="mt-2 text-sm"&gt;No images added yet&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>) : (</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;div className="grid grid-cols-1 md:grid-cols-2 gap-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{files.map(file =&gt; (</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;div key={file.id} className="bg-slate-800 rounded-xl p-3 flex gap-4 items-center border border-slate-700 relative group animate-fade-in"&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                                                </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>{/* Preview */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&lt;div className="w-20 h-20 flex-shrink-0 bg-slate-900 rounded-lg overflow-hidden border border-slate-600 relative"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>{file.status === 'processing' ? (</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                        </span>&lt;div className="w-full h-full flex items-center justify-center"&gt;&lt;IconLoader /&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>) : (</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                        </span>&lt;img src={file.previewUrl} alt="preview" className="w-full h-full object-cover" /&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>)}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>{/* Info */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&lt;div className="flex-1 min-w-0"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>&lt;p className="text-sm font-medium text-slate-200 truncate pr-6"&gt;{file.original.name}&lt;/p&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">                                                    </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>{file.status === 'done' &amp;&amp; (</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                        </span>&lt;div className="mt-1 space-y-1"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                            </span>&lt;div className="flex items-center gap-2 text-xs"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                                </span>&lt;span className="text-slate-500 line-through"&gt;{formatBytes(file.originalSize)}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                                </span>&lt;span className="text-slate-400"&gt;→&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                                </span>&lt;span className="text-green-400 font-bold"&gt;{formatBytes(file.compressedSize)}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                            </span>&lt;div className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-slate-700 text-slate-400 border border-slate-600"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                                </span>{file.width} x {file.height}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>)}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>{/* Actions */}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&lt;button<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>onClick={() =&gt; removeFile(file.id)}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>className="absolute top-2 right-2 p-1.5 text-slate-500 hover:text-red-400 hover:bg-slate-700 rounded-lg transition-colors"</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>&lt;IconTrash /&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&lt;/button&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>{file.status === 'done' &amp;&amp; (</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>&lt;div className="absolute bottom-2 right-2 bg-green-500/10 p-1 rounded-full"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                        </span>&lt;IconCheck /&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>)}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>))}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>)}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const root = ReactDOM.createRoot(document.getElementById('root'));</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>root.render(&lt;App /&gt;);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useRef } = React;
+
+        // --- Icons (Inline SVG for zero dependencies) ---
+        const IconUpload = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>;
+        const IconDownload = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>;
+        const IconTrash = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>;
+        const IconImage = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>;
+        const IconSettings = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>;
+        const IconCheck = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-400"><polyline points="20 6 9 17 4 12"/></svg>;
+        const IconLoader = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="spinner text-blue-400"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>;
+        const IconCode = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
+
+        // --- Helper: Format Bytes ---
+        const formatBytes = (bytes, decimals = 2) => {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        };
+
+        // --- Main App Component ---
+        const App = () => {
+            const [files, setFiles] = useState([]);
+            const [isDragging, setIsDragging] = useState(false);
+            const [isProcessing, setIsProcessing] = useState(false);
+            const [globalSettings, setGlobalSettings] = useState({
+                quality: 0.8,
+                format: 'image/jpeg',
+                maxWidth: 1920,
+            });
+
+            // --- Core Image Compression Logic (Canvas API) ---
+            const compressImage = async (file, settings) => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.src = event.target.result;
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+
+                            // Resize logic (maintain aspect ratio)
+                            if (width > settings.maxWidth) {
+                                height = Math.round((height * settings.maxWidth) / width);
+                                width = settings.maxWidth;
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            canvas.toBlob(
+                                (blob) => {
+                                    if (!blob) {
+                                        reject(new Error('Compression failed'));
+                                        return;
+                                    }
+                                    resolve({
+                                        original: file,
+                                        compressed: blob,
+                                        previewUrl: URL.createObjectURL(blob), // Create URL for preview
+                                        originalSize: file.size,
+                                        compressedSize: blob.size,
+                                        width,
+                                        height,
+                                        id: Math.random().toString(36).substr(2, 9),
+                                        status: 'done'
+                                    });
+                                },
+                                settings.format,
+                                settings.quality
+                            );
+                        };
+                        img.onerror = (err) => reject(err);
+                    };
+                    reader.onerror = (err) => reject(err);
+                });
+            };
+
+            // --- Handlers ---
+            const handleDrop = useCallback(async (e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                
+                const droppedFiles = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+                if (droppedFiles.length === 0) return;
+
+                addFiles(droppedFiles);
+            }, [globalSettings]); // Re-create if settings change (though we pass current settings explicitly)
+
+            const handleFileSelect = (e) => {
+                const selectedFiles = Array.from(e.target.files);
+                if (selectedFiles.length === 0) return;
+                addFiles(selectedFiles);
+            };
+
+            const addFiles = async (newFiles) => {
+                setIsProcessing(true);
+                
+                // Create placeholders first for immediate UI feedback
+                const placeholders = newFiles.map(f => ({
+                    id: Math.random().toString(36).substr(2, 9),
+                    original: f,
+                    status: 'processing',
+                    originalSize: f.size
+                }));
+
+                setFiles(prev => [...prev, ...placeholders]);
+
+                // Process sequentially to not freeze UI too badly on low-end devices
+                const processedResults = [];
+                for (let file of newFiles) {
+                    try {
+                        const result = await compressImage(file, globalSettings);
+                        processedResults.push(result);
+                    } catch (error) {
+                        console.error("Error compressing", file.name, error);
+                        // Push an error state if needed, or just keep original
+                    }
+                }
+
+                // Replace placeholders with real data
+                setFiles(prev => {
+                    const updated = [...prev];
+                    processedResults.forEach(res => {
+                        const idx = updated.findIndex(f => f.original.name === res.original.name && f.status === 'processing');
+                        if (idx !== -1) updated[idx] = res;
+                    });
+                    return updated;
+                });
+                
+                setIsProcessing(false);
+            };
+
+            // Re-process all images when settings change
+            // Debounced slightly to prevent crazy loops if slider is dragged fast
+            useEffect(() => {
+                const timeoutId = setTimeout(async () => {
+                    if (files.length === 0) return;
+                    
+                    // Only re-process if we actually have files
+                    setIsProcessing(true);
+                    const newFiles = await Promise.all(files.map(async (f) => {
+                        // Always re-compress from original source
+                        return await compressImage(f.original, globalSettings);
+                    }));
+                    setFiles(newFiles);
+                    setIsProcessing(false);
+                }, 500);
+
+                return () => clearTimeout(timeoutId);
+            }, [globalSettings.quality, globalSettings.format, globalSettings.maxWidth]);
+
+            const removeFile = (id) => {
+                setFiles(files.filter(f => f.id !== id));
+            };
+
+            const downloadAll = async () => {
+                const zip = new JSZip();
+                const folder = zip.folder("optimized_images");
+                
+                files.forEach(f => {
+                    let ext = globalSettings.format.split('/')[1];
+                    if (ext === 'jpeg') ext = 'jpg';
+                    const nameParts = f.original.name.split('.');
+                    nameParts.pop(); // remove old extension
+                    const newName = `${nameParts.join('.')}_min.${ext}`;
+                    folder.file(newName, f.compressed);
+                });
+
+                const content = await zip.generateAsync({ type: "blob" });
+                saveAs(content, "batch_optimized_images.zip");
+            };
+
+            // New function to download the app source code itself
+            const downloadSource = () => {
+                const htmlContent = document.documentElement.outerHTML;
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                saveAs(blob, "index.html");
+            };
+
+            // Calculate total stats
+            const totalOriginal = files.reduce((acc, f) => acc + (f.originalSize || 0), 0);
+            const totalCompressed = files.reduce((acc, f) => acc + (f.compressedSize || 0), 0);
+            const totalSavings = totalOriginal > 0 ? ((totalOriginal - totalCompressed) / totalOriginal * 100).toFixed(1) : 0;
+
+            return (
+                <div className="min-h-screen flex flex-col items-center py-10 px-4 md:px-10">
+                    
+                    {/* Header */}
+                    <div className="text-center mb-8">
+                        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500 mb-2">
+                            BatchSquoosh
+                        </h1>
+                        <p className="text-slate-400">Secure, client-side batch image optimization.</p>
+                    </div>
+
+                    {/* Main Interface Grid */}
+                    <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        {/* LEFT: Controls & Stats */}
+                        <div className="lg:col-span-4 space-y-6">
+                            
+                            {/* Settings Panel */}
+                            <div className="bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-700">
+                                <div className="flex items-center gap-2 mb-4 text-slate-200 font-semibold">
+                                    <IconSettings /> Global Settings
+                                </div>
+
+                                <div className="space-y-4">
+                                    {/* Format */}
+                                    <div>
+                                        <label className="block text-xs uppercase tracking-wide text-slate-500 mb-1">Output Format</label>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {['image/jpeg', 'image/png', 'image/webp'].map(fmt => (
+                                                <button 
+                                                    key={fmt}
+                                                    onClick={() => setGlobalSettings(s => ({...s, format: fmt}))}
+                                                    className={`text-sm py-2 rounded-lg border transition-colors ${
+                                                        globalSettings.format === fmt 
+                                                        ? 'bg-violet-600 border-violet-500 text-white' 
+                                                        : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'
+                                                    }`}
+                                                >
+                                                    {fmt.split('/')[1].toUpperCase()}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Quality */}
+                                    <div>
+                                        <div className="flex justify-between mb-1">
+                                            <label className="text-xs uppercase tracking-wide text-slate-500">Quality</label>
+                                            <span className="text-xs text-violet-400 font-mono">{Math.round(globalSettings.quality * 100)}%</span>
+                                        </div>
+                                        <input 
+                                            type="range" 
+                                            min="0.1" 
+                                            max="1" 
+                                            step="0.05" 
+                                            value={globalSettings.quality}
+                                            onChange={(e) => setGlobalSettings(s => ({...s, quality: parseFloat(e.target.value)}))}
+                                            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-500"
+                                        />
+                                    </div>
+
+                                    {/* Max Width */}
+                                    <div>
+                                        <div className="flex justify-between mb-1">
+                                            <label className="text-xs uppercase tracking-wide text-slate-500">Max Width (px)</label>
+                                            <span className="text-xs text-violet-400 font-mono">{globalSettings.maxWidth}px</span>
+                                        </div>
+                                        <input 
+                                            type="range" 
+                                            min="400" 
+                                            max="3840" 
+                                            step="100" 
+                                            value={globalSettings.maxWidth}
+                                            onChange={(e) => setGlobalSettings(s => ({...s, maxWidth: parseInt(e.target.value)}))}
+                                            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-500"
+                                        />
+                                    </div>
+                                </div>
+                                
+                                {/* Download Source Button */}
+                                <div className="mt-6 pt-6 border-t border-slate-700">
+                                    <button 
+                                        onClick={downloadSource}
+                                        className="w-full py-2 px-4 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-sm transition-colors flex items-center justify-center gap-2"
+                                        title="Download this app as index.html"
+                                    >
+                                        <IconCode /> Download App Source Code
+                                    </button>
+                                    <p className="text-center text-xs text-slate-500 mt-2">
+                                        Download <code>index.html</code> to host on GitHub.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Summary Stats */}
+                            {files.length > 0 && (
+                                <div className="bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-700">
+                                    <div className="flex justify-between items-end mb-4">
+                                        <div>
+                                            <p className="text-xs text-slate-500 uppercase">Original</p>
+                                            <p className="text-lg font-mono text-slate-300">{formatBytes(totalOriginal)}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-xs text-slate-500 uppercase">Compressed</p>
+                                            <p className="text-lg font-mono text-green-400">{formatBytes(totalCompressed)}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-slate-700 rounded-full h-4 w-full overflow-hidden relative">
+                                        <div 
+                                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 to-emerald-400 transition-all duration-500"
+                                            style={{ width: `${100 - totalSavings}%` }}
+                                        ></div>
+                                    </div>
+                                    <p className="text-center mt-2 text-sm text-green-400 font-bold">
+                                        Saved {totalSavings}%
+                                    </p>
+
+                                    <button 
+                                        onClick={downloadAll}
+                                        className="w-full mt-4 bg-white text-slate-900 font-bold py-3 rounded-xl hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        <IconDownload /> Download All as ZIP
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* RIGHT: Drop Zone & List */}
+                        <div className="lg:col-span-8 flex flex-col h-[calc(100vh-200px)] min-h-[500px]">
+                            
+                            {/* Drop Zone */}
+                            <div 
+                                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                                onDragLeave={() => setIsDragging(false)}
+                                onDrop={handleDrop}
+                                className={`relative flex-shrink-0 mb-6 border-2 border-dashed rounded-2xl p-8 transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer group
+                                    ${isDragging ? 'border-violet-500 bg-violet-500/10' : 'border-slate-600 hover:border-violet-400 hover:bg-slate-800'}`}
+                            >
+                                <input 
+                                    type="file" 
+                                    multiple 
+                                    accept="image/*"
+                                    onChange={handleFileSelect}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                />
+                                <div className="bg-slate-700 p-3 rounded-full mb-3 text-violet-400 group-hover:scale-110 transition-transform">
+                                    <IconUpload />
+                                </div>
+                                <h3 className="text-lg font-semibold text-slate-200">Drag & Drop images here</h3>
+                                <p className="text-sm text-slate-500">or click to browse</p>
+                            </div>
+
+                            {/* File List */}
+                            <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-900/50 rounded-2xl border border-slate-800 p-4">
+                                {files.length === 0 ? (
+                                    <div className="h-full flex flex-col items-center justify-center text-slate-600 opacity-50">
+                                        <IconImage />
+                                        <p className="mt-2 text-sm">No images added yet</p>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {files.map(file => (
+                                            <div key={file.id} className="bg-slate-800 rounded-xl p-3 flex gap-4 items-center border border-slate-700 relative group animate-fade-in">
+                                                
+                                                {/* Preview */}
+                                                <div className="w-20 h-20 flex-shrink-0 bg-slate-900 rounded-lg overflow-hidden border border-slate-600 relative">
+                                                    {file.status === 'processing' ? (
+                                                        <div className="w-full h-full flex items-center justify-center"><IconLoader /></div>
+                                                    ) : (
+                                                        <img src={file.previewUrl} alt="preview" className="w-full h-full object-cover" />
+                                                    )}
+                                                </div>
+
+                                                {/* Info */}
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-slate-200 truncate pr-6">{file.original.name}</p>
+                                                    
+                                                    {file.status === 'done' && (
+                                                        <div className="mt-1 space-y-1">
+                                                            <div className="flex items-center gap-2 text-xs">
+                                                                <span className="text-slate-500 line-through">{formatBytes(file.originalSize)}</span>
+                                                                <span className="text-slate-400">→</span>
+                                                                <span className="text-green-400 font-bold">{formatBytes(file.compressedSize)}</span>
+                                                            </div>
+                                                            <div className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-slate-700 text-slate-400 border border-slate-600">
+                                                                {file.width} x {file.height}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Actions */}
+                                                <button 
+                                                    onClick={() => removeFile(file.id)}
+                                                    className="absolute top-2 right-2 p-1.5 text-slate-500 hover:text-red-400 hover:bg-slate-700 rounded-lg transition-colors"
+                                                >
+                                                    <IconTrash />
+                                                </button>
+
+                                                {file.status === 'done' && (
+                                                    <div className="absolute bottom-2 right-2 bg-green-500/10 p-1 rounded-full">
+                                                        <IconCheck />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
